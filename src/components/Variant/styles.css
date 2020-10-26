@@ -1,0 +1,9 @@
+.variant {
+  max-width: 50vw;
+  padding: 15px;
+  margin: 10px;
+  border-radius: 10px;
+  background-image: radial-gradient(ellipse at top, #f30fcc38, transparent),
+    radial-gradient(ellipse at bottom, #6948734d, transparent);
+  box-shadow: 5px 5px 15px -5px #694873;
+}

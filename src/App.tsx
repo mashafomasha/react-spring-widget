@@ -10,6 +10,8 @@ import { EVariantAnimation } from './enums/EVariantAnimation';
 import 'antd/dist/antd.css';
 import './App.css';
 
+const renderVariant = (props: any) => <Variant key={props.id} {...props} />;
+
 function App() {
   const [variantList, setVariantList] = React.useState<typeof data>(data);
   const [variantAnimation, setVariantAnimation] = React.useState<
@@ -28,24 +30,37 @@ function App() {
     success(Number.isNaN(parsed) ? undefined : parsed);
   };
   const handleSwapButtonClick = () => {
-    const nextVariantList = [];
+    const nextVariantList = [...variantList];
+
+    if (typeof swapFirst !== 'undefined' && typeof swapSecond !== 'undefined') {
+      const tmp = nextVariantList[swapFirst];
+      nextVariantList[swapFirst] = nextVariantList[swapSecond];
+      nextVariantList[swapSecond] = tmp;
+    }
+
+    setVariantList(nextVariantList);
+    setSwapFirst(undefined);
+    setSwapSecond(undefined);
   };
 
   return (
     <main className="main">
-      <div>
+      <div className="controls">
         <AnimationSelect
           defaultValue={variantAnimation}
           onChange={setVariantAnimation}
           options={options}
         />
-        <div>
+        <div className="swap">
           <Input
             value={swapFirst}
             type="number"
             onChange={({ target: { value } }) =>
               handleChangeSwapValue(value, setSwapFirst)
             }
+            placeholder="этот"
+            min={0}
+            max={variantList.length}
           />
           <Input
             value={swapSecond}
@@ -53,17 +68,19 @@ function App() {
             onChange={({ target: { value } }) =>
               handleChangeSwapValue(value, setSwapSecond)
             }
+            placeholder="тот"
+            min={0}
+            max={variantList.length}
           />
           <Button disabled={disabled} onClick={handleSwapButtonClick}>
-            Swap
+            Поменять
           </Button>
         </div>
       </div>
 
-      <VariantList
-        variantList={variantList}
-        renderVariant={(props) => <Variant key={props.id} {...props} />}
-      />
+      <div className="content">
+        <VariantList variantList={variantList} renderVariant={renderVariant} />
+      </div>
     </main>
   );
 }
