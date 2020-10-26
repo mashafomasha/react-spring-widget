@@ -6,11 +6,15 @@ import { Variant } from './components/Variant';
 import { VariantList } from './components/VariantList';
 import { AnimationSelect } from './components/AnimationSelect';
 import { EVariantAnimation } from './enums/EVariantAnimation';
+import { animationCreatorHookByName } from './components/Amination';
+import { IVariant } from './types/variant';
 
 import 'antd/dist/antd.css';
 import './App.css';
 
-const renderVariant = (props: any) => <Variant key={props.id} {...props} />;
+const renderVariant = (props: IVariant) => (
+  <Variant key={props.id} {...props} />
+);
 
 function App() {
   const [variantList, setVariantList] = React.useState<typeof data>(data);
@@ -79,7 +83,11 @@ function App() {
       </div>
 
       <div className="content">
-        <VariantList variantList={variantList} renderVariant={renderVariant} />
+        <VariantList
+          variantList={variantList}
+          renderVariant={renderVariant}
+          useVariantAnimation={animationCreatorHookByName[variantAnimation]}
+        />
       </div>
     </main>
   );

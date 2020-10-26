@@ -1,15 +1,18 @@
 import React from 'react';
-import { useTransition, animated } from 'react-spring';
+import { animated } from 'react-spring';
+import { IVariant } from '../../types/variant';
+import { AnimationCreatorHook } from '../Amination/interfaces';
 
 import './styles.css';
 
 interface IVariantListProps {
-  variantList: { id: string; variant: string }[];
-  renderVariant: (props: { id: string; variant: string }) => React.ReactNode;
+  variantList: IVariant[];
+  renderVariant: (props: IVariant) => React.ReactNode;
+  useVariantAnimation: AnimationCreatorHook;
 }
 
 export const VariantList = React.memo(
-  ({ variantList, renderVariant }: IVariantListProps) => {
+  ({ variantList, renderVariant, useVariantAnimation }: IVariantListProps) => {
     const containerRef = React.useRef<HTMLDivElement | null>(null);
     const [heightById, setHeightById] = React.useState<{
       [key: string]: number;
@@ -26,7 +29,7 @@ export const VariantList = React.memo(
 
         let totalHeight = 0;
 
-        variantNodeList.forEach((node, idx) => {
+        variantNodeList.forEach((node) => {
           const variantId = (node as HTMLDivElement).dataset?.variantId;
 
           if (variantId) {
@@ -44,33 +47,20 @@ export const VariantList = React.memo(
       }
     }, [variantList]);
 
-    // item update animation
-    const variantListWithTransitions = useTransition(
-      variantList.map(({ id, ...rest }) => {
-        return {
-          id,
-          ...rest,
-          top: positionTopById[id] ?? 0,
-        };
-      }),
-      variantList.map(({ id }) => id),
-      {
-        from: { position: 'absolute', opacity: 0 },
-        enter: ({ top }) => ({ top, opacity: 1 }),
-        leave: { height: 0, opacity: 0 },
-        update: ({ top }) => ({ top }),
-      }
-    );
+    const variantTransition = useVariantAnimation({
+      variantOrder: variantList,
+      variantPositionTopById: positionTopById,
+      variantHeightById: heightById,
+    });
 
     return (
       <div className="variantList" ref={containerRef}>
-        {variantListWithTransitions.map(({ item, key, props }: any, idx) => {
+        {variantTransition.map(({ item, key, props }) => {
           return (
             <animated.div
               key={key}
               style={props}
               data-variant-id={item.id}
-              data-variant-idx={idx}
               className="variantContainer"
             >
               {renderVariant(item)}
