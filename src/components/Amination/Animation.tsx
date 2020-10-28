@@ -1,11 +1,11 @@
 import { EVariantAnimation } from '../../enums/EVariantAnimation';
 
 import { AnimationCreatorHookByName } from './interfaces';
-import { useAnimationA, useAnimationB } from './animations';
+import { useAnimationWithInterpolationFunction, useAnimationWithBasicSetup } from './animations';
 
 export const animationCreatorHookByName: AnimationCreatorHookByName = {
-  [EVariantAnimation.A]: useAnimationA,
-  [EVariantAnimation.B]: useAnimationB,
-  [EVariantAnimation.C]: useAnimationA,
-  [EVariantAnimation.D]: useAnimationA,
+  [EVariantAnimation.A]: useAnimationWithInterpolationFunction,
+  [EVariantAnimation.B]: useAnimationWithBasicSetup,
+  [EVariantAnimation.C]: useAnimationWithBasicSetup,
+  [EVariantAnimation.D]: useAnimationWithBasicSetup,
 };

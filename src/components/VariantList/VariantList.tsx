@@ -14,12 +14,23 @@ interface IVariantListProps {
 export const VariantList = React.memo(
   ({ variantList, renderVariant, useVariantAnimation }: IVariantListProps) => {
     const containerRef = React.useRef<HTMLDivElement | null>(null);
+
+    // TODO: refactor to useReducer
     const [heightById, setHeightById] = React.useState<{
       [key: string]: number;
     }>({});
     const [positionTopById, setPositionTopById] = React.useState<{
       [key: string]: number;
     }>({});
+    const [prevVariantList, setPrevVariantList] = React.useState<IVariant[]>(variantList);
+    const [changedVariantList, setChangedVariantList] = React.useState<IVariant[]>([]);
+
+    React.useEffect(() => {
+      const diff = variantList.filter((variant, idx) => prevVariantList[idx]?.id !== variant.id);
+
+      setChangedVariantList(diff);
+      setPrevVariantList(variantList);
+    }, [variantList]);
 
     React.useEffect(() => {
       if (containerRef.current) {
@@ -47,10 +58,11 @@ export const VariantList = React.memo(
       }
     }, [variantList]);
 
-    const variantTransition = useVariantAnimation({
-      variantOrder: variantList,
-      variantPositionTopById: positionTopById,
-      variantHeightById: heightById,
+    const [variantTransition, interpolationFunction] = useVariantAnimation({
+      order: variantList,
+      positionTopById: positionTopById,
+      heightById: heightById,
+      changed: changedVariantList,
     });
 
     return (
@@ -59,7 +71,7 @@ export const VariantList = React.memo(
           return (
             <animated.div
               key={key}
-              style={props}
+              style={interpolationFunction ? interpolationFunction(props) : props}
               data-variant-id={item.id}
               className="variantContainer"
             >

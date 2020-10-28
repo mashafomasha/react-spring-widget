@@ -2,16 +2,20 @@ import { UseTransitionResult } from 'react-spring';
 import { EVariantAnimation } from '../../enums/EVariantAnimation';
 import { IVariant } from '../../types/variant';
 
-export interface IAnimationCreatorOptions {
-  variantOrder: IVariant[];
-  variantPositionTopById: { [key: string]: number };
-  variantHeightById: { [key: string]: number };
+export type AnimationCreatorOptions = {
+  order: IVariant[];
+  changed: IVariant[];
+  heightById: { [key: string]: number };
+  positionTopById: { [key: string]: number };
 }
 
 export type AnimationCreatorHookByName = {
   [key in EVariantAnimation]: AnimationCreatorHook;
 };
 
+export type InterpolationFunction = <P, A>(props: P) => A;
+export type AnimationCreatorHookResult = [UseTransitionResult<any, any>[], InterpolationFunction?];
+
 export type AnimationCreatorHook = (
-  options: IAnimationCreatorOptions
-) => UseTransitionResult<any, any>[];
+  options: AnimationCreatorOptions
+) => AnimationCreatorHookResult;
