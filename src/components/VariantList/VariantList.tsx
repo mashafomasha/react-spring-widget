@@ -50,7 +50,7 @@ export const VariantList = React.memo(
           const variantId = (node as HTMLDivElement).dataset?.variantId;
 
           if (variantId) {
-            const { height } = (node as HTMLDivElement).getBoundingClientRect();
+            const height = (node as HTMLDivElement).clientHeight;
             const { marginTop, marginBottom } = getComputedStyle(
               node as HTMLDivElement
             );
