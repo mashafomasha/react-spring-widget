@@ -1,18 +1,18 @@
 import React from 'react';
-import { animated } from 'react-spring';
+
 import { IVariant } from '../../types/variant';
 import { AnimationCreatorHook } from '../Amination/interfaces';
+import { Variant } from './components';
 
 import './styles.css';
 
 interface IVariantListProps {
   variantList: IVariant[];
-  renderVariant: (props: IVariant) => React.ReactNode;
   useVariantAnimation: AnimationCreatorHook;
 }
 
 export const VariantList = React.memo(
-  ({ variantList, renderVariant, useVariantAnimation }: IVariantListProps) => {
+  ({ variantList, useVariantAnimation }: IVariantListProps) => {
     const containerRef = React.useRef<HTMLDivElement | null>(null);
 
     // TODO: refactor to useReducer
@@ -22,11 +22,17 @@ export const VariantList = React.memo(
     const [positionTopById, setPositionTopById] = React.useState<{
       [key: string]: number;
     }>({});
-    const [prevVariantList, setPrevVariantList] = React.useState<IVariant[]>(variantList);
-    const [changedVariantList, setChangedVariantList] = React.useState<IVariant[]>([]);
+    const [prevVariantList, setPrevVariantList] = React.useState<IVariant[]>(
+      variantList
+    );
+    const [changedVariantList, setChangedVariantList] = React.useState<
+      IVariant[]
+    >([]);
 
     React.useEffect(() => {
-      const diff = variantList.filter((variant, idx) => prevVariantList[idx]?.id !== variant.id);
+      const diff = variantList.filter(
+        (variant, idx) => prevVariantList[idx]?.id !== variant.id
+      );
 
       setChangedVariantList(diff);
       setPrevVariantList(variantList);
@@ -45,11 +51,19 @@ export const VariantList = React.memo(
 
           if (variantId) {
             const { height } = (node as HTMLDivElement).getBoundingClientRect();
+            const { marginTop, marginBottom } = getComputedStyle(
+              node as HTMLDivElement
+            );
 
-            nextHeightById[variantId] = height;
+            const elementHeight =
+              height +
+              parseFloat(marginTop.replace('px', '')) +
+              parseFloat(marginBottom.replace('px', ''));
+
+            nextHeightById[variantId] = elementHeight;
             nextPositionTopById[variantId] = totalHeight;
 
-            totalHeight += height;
+            totalHeight += elementHeight;
           }
         });
 
@@ -67,16 +81,20 @@ export const VariantList = React.memo(
 
     return (
       <div className="variantList" ref={containerRef}>
-        {variantTransition.map(({ item, key, props }) => {
+        {variantTransition.map(({ item, key, props, ...rest }) => {
           return (
-            <animated.div
+            <Variant
               key={key}
-              style={interpolationFunction ? interpolationFunction(props) : props}
+              item={item}
+              variantKey={key}
+              props={
+                interpolationFunction ? interpolationFunction(props) : props
+              }
               data-variant-id={item.id}
-              className="variantContainer"
+              {...rest}
             >
-              {renderVariant(item)}
-            </animated.div>
+              {item.variant}
+            </Variant>
           );
         })}
       </div>

@@ -1,6 +1,9 @@
 import { useTransition, config } from 'react-spring';
 
-import { AnimationCreatorHookResult, AnimationCreatorOptions } from '../interfaces';
+import {
+  AnimationCreatorHookResult,
+  AnimationCreatorOptions,
+} from '../interfaces';
 
 export const useAnimationWithInterpolationFunction = ({
   order,
@@ -28,21 +31,25 @@ export const useAnimationWithInterpolationFunction = ({
     }
   );
 
-  const interpolationFunction = ({ customValue, ...rest }: any) => { // FIXME: type
+  const interpolationFunction = ({ customValue, ...rest }: any) => {
+    // FIXME: type
     const style = {
       ...rest,
       // Unless you need to interpolate them
-      background: customValue.interpolate((v: any) => `rgba(210, 57, 77, ${v})`),
+      // background: customValue.interpolate((v: any) => `rgba(210, 57, 77, ${v})`),
       // Which works with arrays as well
       transform: customValue.interpolate((v: any) => `rotate(${45 * v}deg)`),
       // If you want to combine multiple values use the "interpolate" helper
       border: customValue.interpolate((v: any) => `${v * 10}px solid red`),
       // You can also form ranges, even chain multiple interpolations
-      padding: customValue.interpolate({ range: [0, 0.5, 1], output: [0, 0, 10] }).interpolate((v: any) => `${v}%`),
+      // padding: customValue.interpolate({ range: [0, 0.5, 1], output: [0, 0, 10] }).interpolate((v: any) => `${v}%`),
       // Interpolating strings (like up-front) through ranges is allowed ...
-      borderColor: customValue.interpolate({ range: [0, 1], output: ['red', '#ffaabb'] }),
+      borderColor: customValue.interpolate({
+        range: [0, 1],
+        output: ['red', '#ffaabb'],
+      }),
       // There's also a shortcut for plain, optionless ranges ...
-      opacity: customValue.interpolate([0.1, 0.2, 0.6, 1], [1, 0.1, 0.5, 1])
+      opacity: customValue.interpolate([0.1, 0.2, 0.6, 1], [1, 0.1, 0.5, 1]),
     };
 
     return style;
