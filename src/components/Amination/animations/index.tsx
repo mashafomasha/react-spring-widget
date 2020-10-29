@@ -1,3 +1,4 @@
+// import * as React from 'react';
 import { useTransition, config } from 'react-spring';
 
 import {
@@ -10,11 +11,11 @@ export const useAnimationWithInterpolationFunction = ({
   changed,
   positionTopById,
 }: AnimationCreatorOptions): AnimationCreatorHookResult => {
-  console.log(JSON.stringify(changed));
-
   const variantListWithTransitions = useTransition(
     order.map(({ id, ...rest }) => {
-      const isChanged = Boolean(changed.find(({ id: chId }) => chId === id));
+      const isChanged = changed.includes(id);
+
+      // console.log('TRANSITION', id, changed.includes(id));
 
       return {
         id,
@@ -29,7 +30,10 @@ export const useAnimationWithInterpolationFunction = ({
       from: () => ({ position: 'absolute', customValue: 0 }),
       enter: ({ top, customValue }) => ({ top, customValue }),
       leave: ({ top }) => ({ top, customValue: 0 }),
-      update: ({ top, customValue }) => ({ top, customValue }),
+      update: ({ top, customValue, id }) => {
+        // console.log('UPDATE', id, changed.includes(id));
+        return { top, customValue };
+      },
     }
   );
 
@@ -82,11 +86,11 @@ export const useAnimationWithKeyframesSetup = ({
   changed,
   positionTopById,
 }: AnimationCreatorOptions): AnimationCreatorHookResult => {
-  console.log(changed);
+  // console.log(changed);
 
   const variantListWithTransitions = useTransition(
     order.map(({ id, ...rest }) => {
-      const isChanged = Boolean(changed.find(({ id: chId }) => chId === id));
+      const isChanged = changed.includes(id);
 
       return {
         id,

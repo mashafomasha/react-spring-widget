@@ -2,7 +2,7 @@ import { createReducer, createAction, ActionType } from 'typesafe-actions';
 import { IVariant } from '../../types/variant';
 
 export type VariantListState = {
-  changed: IVariant[];
+  changed: IVariant['id'][];
   heightById: { [key: string]: number };
   positionTopById: { [key: string]: number };
 };

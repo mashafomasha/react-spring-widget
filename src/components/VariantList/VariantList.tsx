@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { usePrevious } from '../../hooks/previous';
 import { IVariant } from '../../types/variant';
 import { AnimationCreatorHook } from '../Amination/interfaces';
 import { reducer, initialState, setState } from './state';
@@ -12,17 +13,12 @@ interface IVariantListProps {
   useVariantAnimation: AnimationCreatorHook;
 }
 
-let prevVariantList: IVariant[] = [];
-
 export const VariantList = React.memo(
   ({ variantList, useVariantAnimation }: IVariantListProps) => {
     const containerRef = React.useRef<HTMLDivElement | null>(null);
 
     const [state, dispatch] = React.useReducer(reducer, initialState);
-
-    React.useEffect(() => {
-      prevVariantList = variantList;
-    }, []);
+    const [prevVariantList] = usePrevious<IVariant[]>(variantList);
 
     React.useEffect(() => {
       if (containerRef.current) {
@@ -53,12 +49,11 @@ export const VariantList = React.memo(
           }
         });
 
-        const changed = variantList.filter(
-          (variant, idx) => prevVariantList[idx]?.id !== variant.id
-        );
+        const changed = variantList
+          .filter((variant, idx) => prevVariantList[idx]?.id !== variant.id)
+          .map(({ id }) => id);
 
-        prevVariantList = variantList;
-
+        // console.log('DISPATCH');
         dispatch(setState({ changed, heightById, positionTopById }));
       }
     }, [variantList]);
