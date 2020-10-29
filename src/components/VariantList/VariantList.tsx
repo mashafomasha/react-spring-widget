@@ -2,6 +2,7 @@ import React from 'react';
 
 import { IVariant } from '../../types/variant';
 import { AnimationCreatorHook } from '../Amination/interfaces';
+import { reducer, initialState, setState } from './state';
 import { Variant } from './components';
 
 import './styles.css';
@@ -11,37 +12,22 @@ interface IVariantListProps {
   useVariantAnimation: AnimationCreatorHook;
 }
 
+let prevVariantList: IVariant[] = [];
+
 export const VariantList = React.memo(
   ({ variantList, useVariantAnimation }: IVariantListProps) => {
     const containerRef = React.useRef<HTMLDivElement | null>(null);
 
-    // TODO: refactor to useReducer
-    const [heightById, setHeightById] = React.useState<{
-      [key: string]: number;
-    }>({});
-    const [positionTopById, setPositionTopById] = React.useState<{
-      [key: string]: number;
-    }>({});
-    const [prevVariantList, setPrevVariantList] = React.useState<IVariant[]>(
-      variantList
-    );
-    const [changedVariantList, setChangedVariantList] = React.useState<
-      IVariant[]
-    >([]);
+    const [state, dispatch] = React.useReducer(reducer, initialState);
 
     React.useEffect(() => {
-      const diff = variantList.filter(
-        (variant, idx) => prevVariantList[idx]?.id !== variant.id
-      );
-
-      setChangedVariantList(diff);
-      setPrevVariantList(variantList);
-    }, [variantList]);
+      prevVariantList = variantList;
+    }, []);
 
     React.useEffect(() => {
       if (containerRef.current) {
-        const nextHeightById = { ...heightById };
-        const nextPositionTopById = { ...positionTopById };
+        const heightById: { [key: string]: number } = {};
+        const positionTopById: { [key: string]: number } = {};
         const variantNodeList = containerRef.current.childNodes;
 
         let totalHeight = 0;
@@ -50,7 +36,7 @@ export const VariantList = React.memo(
           const variantId = (node as HTMLDivElement).dataset?.variantId;
 
           if (variantId) {
-            const height = (node as HTMLDivElement).clientHeight;
+            const height = (node as HTMLDivElement).offsetHeight;
             const { marginTop, marginBottom } = getComputedStyle(
               node as HTMLDivElement
             );
@@ -60,23 +46,26 @@ export const VariantList = React.memo(
               parseFloat(marginTop.replace('px', '')) +
               parseFloat(marginBottom.replace('px', ''));
 
-            nextHeightById[variantId] = elementHeight;
-            nextPositionTopById[variantId] = totalHeight;
+            heightById[variantId] = elementHeight;
+            positionTopById[variantId] = totalHeight;
 
             totalHeight += elementHeight;
           }
         });
 
-        setHeightById(nextHeightById);
-        setPositionTopById(nextPositionTopById);
+        const changed = variantList.filter(
+          (variant, idx) => prevVariantList[idx]?.id !== variant.id
+        );
+
+        prevVariantList = variantList;
+
+        dispatch(setState({ changed, heightById, positionTopById }));
       }
     }, [variantList]);
 
     const [variantTransition, interpolationFunction] = useVariantAnimation({
       order: variantList,
-      positionTopById: positionTopById,
-      heightById: heightById,
-      changed: changedVariantList,
+      ...state,
     });
 
     return (
