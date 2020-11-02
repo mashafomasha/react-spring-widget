@@ -5,7 +5,6 @@ import { data, options } from './constants';
 import { VariantList } from './components/VariantList';
 import { AnimationSelect } from './components/AnimationSelect';
 import { EVariantAnimation } from './enums/EVariantAnimation';
-import { animationCreatorHookByName } from './components/Amination';
 
 import 'antd/dist/antd.css';
 import './App.css';
@@ -77,10 +76,7 @@ function App() {
       </div>
 
       <div className="content">
-        <VariantList
-          variantList={variantList}
-          useVariantAnimation={animationCreatorHookByName[variantAnimation]}
-        />
+        <VariantList variantList={variantList} />
       </div>
     </main>
   );

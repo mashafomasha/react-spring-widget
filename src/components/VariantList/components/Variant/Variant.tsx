@@ -1,28 +1,17 @@
 import React from 'react';
-import { animated, UseTransitionResult } from 'react-spring';
 
 import { IVariant } from '../../../../types/variant';
 
 import './styles.css';
 
-export type VariantProps<
-  TItem extends IVariant,
-  DS extends {}
-> = UseTransitionResult<TItem, DS> & {
-  children: React.ReactNode;
-  variantKey: string;
+export type VariantProps = {
+  variant: IVariant;
 };
 
-export const Variant = <TItem extends IVariant, DS extends {}>({
-  item,
-  props,
-  children,
-  variantKey,
-  ...rest
-}: VariantProps<TItem, DS>) => {
+export const Variant = ({ variant, ...rest }: VariantProps) => {
   return (
-    <animated.div style={props} className="variant" {...rest} key={variantKey}>
-      {children}
-    </animated.div>
+    <div className="variant" {...rest}>
+      {variant.variant}
+    </div>
   );
 };
