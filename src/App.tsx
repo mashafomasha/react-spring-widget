@@ -4,6 +4,7 @@ import { Input, Button } from 'antd';
 import { data, options } from './constants';
 import { VariantList } from './components/VariantList';
 import { AnimationSelect } from './components/AnimationSelect';
+import { animationComponentById } from './components/Amination';
 import { EVariantAnimation } from './enums/EVariantAnimation';
 
 import 'antd/dist/antd.css';
@@ -39,6 +40,8 @@ function App() {
     setSwapFirst(undefined);
     setSwapSecond(undefined);
   };
+
+  const Animation = animationComponentById[variantAnimation];
 
   return (
     <main className="main">
@@ -76,7 +79,7 @@ function App() {
       </div>
 
       <div className="content">
-        <VariantList variantList={variantList} />
+        <VariantList variantList={variantList} Animation={Animation} />
       </div>
     </main>
   );

@@ -1,13 +1,14 @@
 import React from 'react';
-import { config } from 'react-spring';
 
 import { IVariant } from '../../types/variant';
+import { AnimationComponentProps } from '../Amination/types';
 import { Variant, List } from './components';
 
 import './styles.css';
 
 type VariantListProps = {
   variantList: IVariant[];
+  Animation: React.ComponentType<AnimationComponentProps>;
 };
 type VariantListState = {
   heightById: { [key: string]: number };
@@ -59,17 +60,16 @@ export class VariantList extends React.PureComponent<
   };
 
   render() {
-    const { variantList } = this.props;
+    const { variantList, Animation } = this.props;
     const { heightById } = this.state;
 
     return (
       <div className="variantList" ref={this.containerRef}>
         <List
-          className="main-list"
           items={variantList}
           keys={({ id }) => id}
           heights={({ id }) => heightById[id] || 0}
-          config={config.wobbly}
+          Animation={Animation}
         >
           {(variant) => <Variant variant={variant} />}
         </List>
