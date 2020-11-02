@@ -80,6 +80,7 @@ export class VariantList extends React.PureComponent<
       const { contentRect, target } = entry;
       const variantId = (target as HTMLDivElement).dataset?.variantId;
 
+      console.log(contentRect, heightById[variantId!]);
       if (variantId && contentRect.height !== heightById[variantId]) {
         heightById[variantId] = contentRect.height;
       }
