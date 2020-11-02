@@ -1,4 +1,6 @@
 import React from 'react';
+import { ResizeObserver } from 'resize-observer';
+import { ResizeObserverCallback } from 'resize-observer/lib/ResizeObserverCallback';
 
 import { IVariant } from '../../types/variant';
 import { AnimationComponentProps } from '../Amination/types';
@@ -21,10 +23,17 @@ export class VariantList extends React.PureComponent<
   VariantListState
 > {
   private containerRef = React.createRef<HTMLDivElement>();
+  private observer: ResizeObserver;
 
-  state: VariantListState = {
-    heightById: {},
-  };
+  constructor(props: VariantListProps) {
+    super(props);
+
+    this.state = {
+      heightById: {},
+    };
+
+    this.observer = new ResizeObserver(this.observeHeightChange);
+  }
 
   componentDidMount() {
     setTimeout(() => {
@@ -54,12 +63,34 @@ export class VariantList extends React.PureComponent<
             parseFloat(marginBottom.replace('px', ''));
 
           heightById[variantId] = elementHeight;
+
+          // watch for changes
+          this.observer.observe(node);
         }
       });
 
       this.setState({ heightById });
     }
   };
+
+  private observeHeightChange: ResizeObserverCallback = (entries) => {
+    const heightById = { ...this.state.heightById };
+
+    for (const entry of entries) {
+      const { contentRect, target } = entry;
+      const variantId = (target as HTMLDivElement).dataset?.variantId;
+
+      if (variantId && contentRect.height !== heightById[variantId]) {
+        heightById[variantId] = contentRect.height;
+      }
+    }
+
+    this.setState({ heightById });
+  };
+
+  componentWillUnmount() {
+    this.observer.disconnect();
+  }
 
   render() {
     const { variantList, Animation } = this.props;
