@@ -8,46 +8,51 @@ import {
 
 export const useAnimationWithInterpolationFunction = ({
   order,
-  changed,
+  // changed,
   positionTopById,
 }: AnimationCreatorOptions): AnimationCreatorHookResult => {
   const variantListWithTransitions = useTransition(
     order.map(({ id, ...rest }) => {
-      const isChanged = changed.includes(id);
-
-      // console.log('TRANSITION', id, changed.includes(id));
-
       return {
         id,
         ...rest,
         top: positionTopById[id] ?? 0,
-
-        customValue: isChanged ? 1 : 0,
       };
     }),
     order.map(({ id }) => id),
     {
-      from: () => ({ position: 'absolute', customValue: 0 }),
-      enter: ({ top, customValue }) => ({ top, customValue }),
-      leave: ({ top }) => ({ top, customValue: 0 }),
-      update: ({ top, customValue, id }) => {
-        // console.log('UPDATE', id, changed.includes(id));
-        return { top, customValue };
-      },
+      from: () => ({ position: 'absolute' }),
+      enter: ({ top }) => ({ top }),
+      leave: ({ top }) => ({ top }),
+      update: ({ top }) => ({ top }),
     }
   );
 
-  const interpolationFunction = ({ customValue, ...rest }: any) => {
+  // const interpolationFunction = ({ customValue, ...rest }: any) => {
+  //   // FIXME: type
+  //   const style = {
+  //     ...rest,
+  //     transform: customValue.interpolate((v: any) => `rotate(${360 * v}deg)`),
+  //     border: customValue.interpolate((v: any) => `${v * 2}px solid red`),
+  //     borderColor: customValue.interpolate({
+  //       range: [0, 1],
+  //       output: ['red', '#ffaabb'],
+  //     }),
+  //     opacity: customValue.interpolate([0.1, 0.2, 0.6, 1], [1, 0.1, 0.5, 1]),
+  //   };
+
+  //   return style;
+  // };
+
+  const interpolationFunction = (props: any) => {
     // FIXME: type
     const style = {
-      ...rest,
-      transform: customValue.interpolate((v: any) => `rotate(${360 * v}deg)`),
-      border: customValue.interpolate((v: any) => `${v * 2}px solid red`),
-      borderColor: customValue.interpolate({
-        range: [0, 1],
-        output: ['red', '#ffaabb'],
+      ...props,
+      border: props.top.interpolate((v: any) => `${v % 2}px solid red`),
+      transform: props.top.interpolate((v: any) => {
+        console.log(v);
+        return `rotate(0deg)`;
       }),
-      opacity: customValue.interpolate([0.1, 0.2, 0.6, 1], [1, 0.1, 0.5, 1]),
     };
 
     return style;

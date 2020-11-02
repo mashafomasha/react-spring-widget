@@ -53,7 +53,6 @@ export const VariantList = React.memo(
           .filter((variant, idx) => prevVariantList[idx]?.id !== variant.id)
           .map(({ id }) => id);
 
-        // console.log('DISPATCH');
         dispatch(setState({ changed, heightById, positionTopById }));
       }
     }, [variantList]);
