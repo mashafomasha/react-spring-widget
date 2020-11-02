@@ -1,1 +1,1 @@
-export { animationCreatorHookByName } from './Animation';
+export { animationComponentById } from './Animation';

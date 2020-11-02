@@ -1,87 +1,79 @@
 import React from 'react';
 
-import { usePrevious } from '../../hooks/previous';
 import { IVariant } from '../../types/variant';
-import { AnimationCreatorHook } from '../Amination/interfaces';
-import { reducer, initialState, setState } from './state';
-import { Variant } from './components';
+import { AnimationComponentProps } from '../Amination/types';
+import { Variant, List } from './components';
 
 import './styles.css';
 
-interface IVariantListProps {
+type VariantListProps = {
   variantList: IVariant[];
-  useVariantAnimation: AnimationCreatorHook;
-}
+  Animation: React.ComponentType<AnimationComponentProps>;
+};
+type VariantListState = {
+  heightById: { [key: string]: number };
+};
 
-export const VariantList = React.memo(
-  ({ variantList, useVariantAnimation }: IVariantListProps) => {
-    const containerRef = React.useRef<HTMLDivElement | null>(null);
+export class VariantList extends React.PureComponent<
+  VariantListProps,
+  VariantListState
+> {
+  private containerRef = React.createRef<HTMLDivElement>();
 
-    const [state, dispatch] = React.useReducer(reducer, initialState);
-    const [prevVariantList] = usePrevious<IVariant[]>(variantList);
+  state: VariantListState = {
+    heightById: {},
+  };
 
-    React.useEffect(() => {
-      if (containerRef.current) {
-        const heightById: { [key: string]: number } = {};
-        const positionTopById: { [key: string]: number } = {};
-        const variantNodeList = containerRef.current.childNodes;
+  componentDidMount() {
+    setTimeout(() => {
+      this.getVariantHeightById();
+    }, 0);
+  }
 
-        let totalHeight = 0;
+  private getVariantHeightById = () => {
+    if (this.containerRef.current) {
+      const heightById: { [key: string]: number } = {};
+      const variantNodeList = this.containerRef.current.querySelectorAll(
+        '*[data-variant-id]'
+      );
 
-        variantNodeList.forEach((node) => {
-          const variantId = (node as HTMLDivElement).dataset?.variantId;
+      variantNodeList.forEach((node) => {
+        const variantId = (node as HTMLDivElement).dataset?.variantId;
 
-          if (variantId) {
-            const height = (node as HTMLDivElement).offsetHeight;
-            const { marginTop, marginBottom } = getComputedStyle(
-              node as HTMLDivElement
-            );
+        if (variantId) {
+          const height = (node as HTMLDivElement).offsetHeight;
+          const { marginTop, marginBottom } = getComputedStyle(
+            node as HTMLDivElement
+          );
 
-            const elementHeight =
-              height +
-              parseFloat(marginTop.replace('px', '')) +
-              parseFloat(marginBottom.replace('px', ''));
+          const elementHeight =
+            height +
+            parseFloat(marginTop.replace('px', '')) +
+            parseFloat(marginBottom.replace('px', ''));
 
-            heightById[variantId] = elementHeight;
-            positionTopById[variantId] = totalHeight;
+          heightById[variantId] = elementHeight;
+        }
+      });
 
-            totalHeight += elementHeight;
-          }
-        });
+      this.setState({ heightById });
+    }
+  };
 
-        const changed = variantList
-          .filter((variant, idx) => prevVariantList[idx]?.id !== variant.id)
-          .map(({ id }) => id);
-
-        // console.log('DISPATCH');
-        dispatch(setState({ changed, heightById, positionTopById }));
-      }
-    }, [variantList]);
-
-    const [variantTransition, interpolationFunction] = useVariantAnimation({
-      order: variantList,
-      ...state,
-    });
+  render() {
+    const { variantList, Animation } = this.props;
+    const { heightById } = this.state;
 
     return (
-      <div className="variantList" ref={containerRef}>
-        {variantTransition.map(({ item, key, props, ...rest }) => {
-          return (
-            <Variant
-              key={key}
-              item={item}
-              variantKey={key}
-              props={
-                interpolationFunction ? interpolationFunction(props) : props
-              }
-              data-variant-id={item.id}
-              {...rest}
-            >
-              {item.variant}
-            </Variant>
-          );
-        })}
+      <div className="variantList" ref={this.containerRef}>
+        <List
+          items={variantList}
+          keys={({ id }) => id}
+          heights={({ id }) => heightById[id] || 0}
+          Animation={Animation}
+        >
+          {(variant) => <Variant variant={variant} />}
+        </List>
       </div>
     );
   }
-);
+}
