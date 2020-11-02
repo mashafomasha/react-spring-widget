@@ -20,11 +20,23 @@ type ListProps = {
   children: (item: IVariant) => React.ReactNode;
 
   Animation: React.ComponentType<AnimationComponentProps>;
+  getItemHTMLAttributes: (
+    item: IVariant
+  ) => React.HTMLAttributes<HTMLDivElement> & { [data: string]: string };
 };
 
 export class List extends React.PureComponent<ListProps> {
   render() {
-    const { children, items, keys, heights, Animation, ...rest } = this.props;
+    const {
+      children,
+      items,
+      keys,
+      heights,
+      Animation,
+      getItemHTMLAttributes,
+      ...rest
+    } = this.props;
+
     let totalHeight = 0;
 
     const displayData = items.map((variant) => {
@@ -40,9 +52,7 @@ export class List extends React.PureComponent<ListProps> {
           items={displayData}
           itemStyles={styles.inner}
           renderItemContent={(variant) => children(variant)}
-          getItemHTMLAttributes={(variant) => ({
-            'data-variant-id': variant.id,
-          })}
+          getItemHTMLAttributes={getItemHTMLAttributes}
         />
       </div>
     );

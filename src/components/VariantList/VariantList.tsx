@@ -14,6 +14,8 @@ type VariantListState = {
   heightById: { [key: string]: number };
 };
 
+const dataAttrName = 'data-variant-id' as const;
+
 export class VariantList extends React.PureComponent<
   VariantListProps,
   VariantListState
@@ -34,7 +36,7 @@ export class VariantList extends React.PureComponent<
     if (this.containerRef.current) {
       const heightById: { [key: string]: number } = {};
       const variantNodeList = this.containerRef.current.querySelectorAll(
-        '*[data-variant-id]'
+        `*[${dataAttrName}]`
       );
 
       variantNodeList.forEach((node) => {
@@ -70,6 +72,9 @@ export class VariantList extends React.PureComponent<
           keys={({ id }) => id}
           heights={({ id }) => heightById[id] || 0}
           Animation={Animation}
+          getItemHTMLAttributes={(variant) => ({
+            [dataAttrName]: variant.id,
+          })}
         >
           {(variant) => <Variant variant={variant} />}
         </List>
