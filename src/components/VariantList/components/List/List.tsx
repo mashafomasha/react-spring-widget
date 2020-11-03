@@ -14,11 +14,10 @@ const styles = {
 
 type ListProps = {
   items: IVariant[];
-
+  changedIds: IVariant['id'][];
   keys: (item: IVariant) => IVariant['id'];
   heights: (item: IVariant) => number;
   children: (item: IVariant) => React.ReactNode;
-
   Animation: React.ComponentType<AnimationComponentProps>;
   getItemHTMLAttributes: (
     item: IVariant
@@ -34,6 +33,7 @@ export class List extends React.PureComponent<ListProps> {
       heights,
       Animation,
       getItemHTMLAttributes,
+      changedIds,
       ...rest
     } = this.props;
 
@@ -53,6 +53,7 @@ export class List extends React.PureComponent<ListProps> {
           itemStyles={styles.inner}
           renderItemContent={(variant) => children(variant)}
           getItemHTMLAttributes={getItemHTMLAttributes}
+          changedIds={changedIds}
         />
       </div>
     );

@@ -14,6 +14,8 @@ type VariantListProps = {
 };
 type VariantListState = {
   heightById: { [key: string]: number };
+  changedIds: string[];
+  prevVariantList: IVariant[];
 };
 
 const dataAttrName = 'data-variant-id' as const;
@@ -30,9 +32,37 @@ export class VariantList extends React.PureComponent<
 
     this.state = {
       heightById: {},
+      changedIds: [],
+      prevVariantList: props.variantList,
     };
 
     this.observer = new ResizeObserver(this.observeHeightChange);
+  }
+
+  static getDerivedStateFromProps(
+    props: VariantListProps,
+    state: VariantListState
+  ) {
+    const { variantList } = props;
+    const { prevVariantList } = state;
+
+    if (variantList !== prevVariantList) {
+      const nextState: Partial<VariantListState> = {
+        prevVariantList: variantList,
+      };
+
+      const changedIds = variantList
+        .filter(({ id }, idx) => id !== prevVariantList[idx]?.id)
+        .map(({ id }) => id);
+
+      if (changedIds.length > 0) {
+        nextState.changedIds = changedIds;
+      }
+
+      return nextState;
+    }
+
+    return null;
   }
 
   componentDidMount() {
@@ -80,7 +110,6 @@ export class VariantList extends React.PureComponent<
       const { contentRect, target } = entry;
       const variantId = (target as HTMLDivElement).dataset?.variantId;
 
-      console.log(contentRect, heightById[variantId!]);
       if (variantId && contentRect.height !== heightById[variantId]) {
         heightById[variantId] = contentRect.height;
       }
@@ -95,7 +124,7 @@ export class VariantList extends React.PureComponent<
 
   render() {
     const { variantList, Animation } = this.props;
-    const { heightById } = this.state;
+    const { heightById, changedIds } = this.state;
 
     return (
       <div className="variantList" ref={this.containerRef}>
@@ -107,8 +136,14 @@ export class VariantList extends React.PureComponent<
           getItemHTMLAttributes={(variant) => ({
             [dataAttrName]: variant.id,
           })}
+          changedIds={changedIds}
         >
-          {(variant) => <Variant variant={variant} />}
+          {(variant) => (
+            <Variant
+              changed={changedIds.includes(variant.id)}
+              variant={variant}
+            />
+          )}
         </List>
       </div>
     );

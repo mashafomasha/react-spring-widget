@@ -17,6 +17,7 @@ export class Wobbly extends React.PureComponent<AnimationComponentProps> {
       itemStyles,
       renderItemContent,
       getItemHTMLAttributes,
+      changedIds,
     } = this.props;
 
     return (
@@ -27,11 +28,26 @@ export class Wobbly extends React.PureComponent<AnimationComponentProps> {
         initial={null}
         from={{ opacity: 1 }}
         leave={{ opacity: 1 }}
-        enter={({ y }) => ({ y, opacity: 1 })} // do not specify height in order to get "auto" value
-        update={({ y }) => ({ y })}
+        enter={({ y }) => ({ y, opacity: 1, x: 0, rotation: 0 })} // do not specify height in order to get "auto" value
+        update={({ y, variant: { id } }) => {
+          const changed = changedIds.includes(id);
+
+          if (!changed) {
+            return { y };
+          }
+
+          // multistaging
+          return [
+            { y },
+            { x: 0, rotation: 0 },
+            { x: 10, rotation: 5 },
+            { x: -10, rotation: -5 },
+            { x: 0, rotation: 0 },
+          ];
+        }}
         config={this.config}
       >
-        {({ variant }, s, i) => ({ opacity, y }: any) => {
+        {({ variant }, s, i) => ({ opacity, x, y, rotation }: any) => {
           return (
             <animated.div
               style={{
@@ -40,14 +56,16 @@ export class Wobbly extends React.PureComponent<AnimationComponentProps> {
                 zIndex: items.length - i,
                 transform: interpolate(
                   [
-                    y.interpolate((y: number) => `translate3d(0,${y}px, 0)`),
-                    y
-                      // .interpolate({ range: [0, 0.5, 1], output: [1, 1.1, 1] })
-                      .interpolate((o: number) => `scale(${i < 3 ? 1.1 : 1})`),
+                    y.interpolate((y: number) => `translateY(${y}px)`),
+                    x.interpolate((x: number) => `translateX(${x}px)`),
+                    rotation.interpolate(
+                      (rotation: number) => `rotate(${rotation}deg)`
+                    ),
                   ],
-                  (translate, scale) => `${translate} ${scale}`
+                  (translateX, translateY, rotate) =>
+                    `${translateX} ${translateY} ${rotate}`
                 ),
-                padding: i < 3 ? 5 : 0,
+                // padding: i < 3 ? 5 : 0,
               }}
               children={renderItemContent(variant)}
               {...getItemHTMLAttributes(variant)}

@@ -6,12 +6,25 @@ import './styles.css';
 
 export type VariantProps = {
   variant: IVariant;
+  changed: boolean;
 };
 
-export const Variant = ({ variant, ...rest }: VariantProps) => {
-  return (
-    <div className="variant" {...rest}>
-      {variant.variant}
-    </div>
-  );
-};
+export class Variant extends React.PureComponent<VariantProps> {
+  componentDidUpdate(prevProps: VariantProps) {
+    const { changed } = this.props;
+
+    if (changed) {
+      // start inner animation
+    }
+  }
+
+  render() {
+    const { variant, changed, ...rest } = this.props;
+
+    return (
+      <div className="variant" {...rest}>
+        {variant.variant}
+      </div>
+    );
+  }
+}

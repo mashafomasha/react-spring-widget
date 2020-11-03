@@ -13,6 +13,7 @@ export type TransitionItem = {
 export type AnimationComponentProps = {
   items: TransitionItem[];
   itemStyles?: React.CSSProperties;
+  changedIds: IVariant['id'][];
   renderItemContent: (variant: IVariant) => React.ReactNode;
   getItemHTMLAttributes: (
     variant: IVariant
