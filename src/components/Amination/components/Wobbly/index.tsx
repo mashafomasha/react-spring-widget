@@ -9,7 +9,12 @@ import {
 import { AnimationComponentProps } from '../../types';
 
 export class Wobbly extends React.PureComponent<AnimationComponentProps> {
-  private config = config.wobbly;
+  private config = {
+    mass: 1,
+    tension: 380,
+    friction: 1,
+    duration: 175,
+  };
 
   render() {
     const {
@@ -29,23 +34,37 @@ export class Wobbly extends React.PureComponent<AnimationComponentProps> {
         from={{ opacity: 1 }}
         leave={{ opacity: 1 }}
         enter={({ y }) => ({ y, opacity: 1, x: 0, rotation: 0 })} // do not specify height in order to get "auto" value
-        update={({ y, variant: { id } }) => {
+        // update={({ y, variant: { id } }) => {
+        //   const changed = changedIds.includes(id);
+
+        //   if (!changed) {
+        //     return { y };
+        //   }
+
+        //   // multistaging
+        //   return [
+        //     { y },
+        //     { x: 0, rotation: 0 },
+        //     { x: 10, rotation: 5 },
+        //     { x: -10, rotation: -5 },
+        //     { x: 0, rotation: 0 },
+        //   ];
+        // }}
+        update={({ y, variant: { id } }) => async (next: any, stop: any) => {
           const changed = changedIds.includes(id);
 
+          await next({ y });
+
           if (!changed) {
-            return { y };
+            return;
           }
 
-          // multistaging
-          return [
-            { y },
-            { x: 0, rotation: 0 },
-            { x: 10, rotation: 5 },
-            { x: -10, rotation: -5 },
-            { x: 0, rotation: 0 },
-          ];
+          await next({ x: 0, rotation: 0, config: this.config });
+          await next({ x: 10, rotation: 5, config: this.config });
+          await next({ x: -10, rotation: -5, config: this.config });
+          await next({ x: 0, rotation: 0, config: this.config });
         }}
-        config={this.config}
+        config={config.wobbly}
       >
         {({ variant }, s, i) => ({ opacity, x, y, rotation }: any) => {
           return (
