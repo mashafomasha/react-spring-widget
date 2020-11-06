@@ -14,7 +14,7 @@ interface IAnimationSelectProps {
 }
 
 export const AnimationSelect = ({
-  defaultValue = EVariantAnimation.A,
+  defaultValue = EVariantAnimation.Scale,
   options,
   onChange,
 }: IAnimationSelectProps) => {

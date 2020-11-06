@@ -1,6 +1,6 @@
 export enum EVariantAnimation {
-  A = 'A',
-  B = 'B',
-  C = 'C',
+  Scale = 'Scale',
+  Wave = 'Wave',
+  Bounce = 'Bounce',
   D = 'D',
 }

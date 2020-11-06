@@ -1,10 +1,10 @@
 import { EVariantAnimation } from '../../enums/EVariantAnimation';
-import { Wobbly, Slide } from './components';
+import { Wave, Scale, Bounce } from './components';
 import { AnimationComponentById } from './types';
 
 export const animationComponentById: AnimationComponentById = {
-  [EVariantAnimation.A]: Slide,
-  [EVariantAnimation.B]: Wobbly,
-  [EVariantAnimation.C]: Wobbly,
-  [EVariantAnimation.D]: Wobbly,
+  [EVariantAnimation.Scale]: Scale,
+  [EVariantAnimation.Wave]: Wave,
+  [EVariantAnimation.Bounce]: Bounce,
+  [EVariantAnimation.D]: Wave,
 };

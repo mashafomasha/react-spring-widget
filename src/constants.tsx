@@ -26,8 +26,8 @@ export const options: {
   value: EVariantAnimation;
   label: React.ReactNode;
 }[] = [
-  { value: EVariantAnimation.A, label: EVariantAnimation.A },
-  { value: EVariantAnimation.B, label: EVariantAnimation.B },
-  { value: EVariantAnimation.C, label: EVariantAnimation.C },
+  { value: EVariantAnimation.Scale, label: EVariantAnimation.Scale },
+  { value: EVariantAnimation.Wave, label: EVariantAnimation.Wave },
+  { value: EVariantAnimation.Bounce, label: EVariantAnimation.Bounce },
   { value: EVariantAnimation.D, label: EVariantAnimation.D },
 ];

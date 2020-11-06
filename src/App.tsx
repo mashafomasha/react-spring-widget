@@ -14,7 +14,7 @@ function App() {
   const [variantList, setVariantList] = React.useState<typeof data>(data);
   const [variantAnimation, setVariantAnimation] = React.useState<
     EVariantAnimation
-  >(EVariantAnimation.A);
+  >(EVariantAnimation.Scale);
   const [swapFirst, setSwapFirst] = React.useState<number | undefined>();
   const [swapSecond, setSwapSecond] = React.useState<number | undefined>();
   const disabled =
