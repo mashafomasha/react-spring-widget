@@ -1,11 +1,7 @@
 import * as React from 'react';
-import {
-  Transition,
-  animated,
-  config,
-  interpolate,
-} from 'react-spring/renderprops';
+import { config, interpolate } from 'react-spring/renderprops';
 
+import { BaseAnimation } from '../BaseAnimation';
 import { AnimationComponentProps } from '../../types';
 
 export class Scale extends React.PureComponent<AnimationComponentProps> {
@@ -17,20 +13,12 @@ export class Scale extends React.PureComponent<AnimationComponentProps> {
   };
 
   render() {
-    const {
-      items,
-      itemStyles,
-      renderItemContent,
-      getItemHTMLAttributes,
-      changedIds,
-    } = this.props;
+    const { items, itemStyles, changedIds, children, ...rest } = this.props;
 
     return (
-      <Transition
-        native
+      <BaseAnimation
         items={items}
-        keys={(d) => d.key}
-        initial={null}
+        config={config.gentle}
         from={{ opacity: 1 }}
         leave={{ opacity: 1 }}
         enter={({ y }) => ({ y, opacity: 1, scale: 1 })} // do not specify height in order to get "auto" value
@@ -49,30 +37,23 @@ export class Scale extends React.PureComponent<AnimationComponentProps> {
           await next({ scale: 0.9, config: this.config });
           await next({ scale: 1, config: this.config });
         }}
-        config={config.gentle}
-      >
-        {({ variant }, s, i) => ({ opacity, y, scale }: any) => {
-          return (
-            <animated.div
-              style={{
-                ...itemStyles,
-                opacity,
-                zIndex: items.length - i,
-                transform: interpolate(
-                  [
-                    y.interpolate((y: number) => `translateY(${y}px)`),
-                    scale.interpolate((s: number) => `scale(${s})`),
-                  ],
-                  (translateY, scale) => `${translateY} ${scale}`
-                ),
-                // padding: i < 3 ? 5 : 0,
-              }}
-              children={renderItemContent(variant)}
-              {...getItemHTMLAttributes(variant)}
-            />
-          );
-        }}
-      </Transition>
+        getItemAnimatedDivStyle={({
+          index,
+          itemOptions: { opacity, y, scale },
+        }) => ({
+          ...itemStyles,
+          opacity,
+          zIndex: items.length - index,
+          transform: interpolate(
+            [
+              y.interpolate((y: number) => `translateY(${y}px)`),
+              scale.interpolate((s: number) => `scale(${s})`),
+            ],
+            (translateY, scale) => `${translateY} ${scale}`
+          ),
+        })}
+        {...rest}
+      />
     );
   }
 }

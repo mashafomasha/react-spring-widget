@@ -1,11 +1,7 @@
 import * as React from 'react';
-import {
-  Transition,
-  animated,
-  config,
-  interpolate,
-} from 'react-spring/renderprops';
+import { config, interpolate } from 'react-spring/renderprops';
 
+import { BaseAnimation } from '../BaseAnimation';
 import { AnimationComponentProps } from '../../types';
 
 export class Bounce extends React.PureComponent<AnimationComponentProps> {
@@ -17,23 +13,15 @@ export class Bounce extends React.PureComponent<AnimationComponentProps> {
   };
 
   render() {
-    const {
-      items,
-      itemStyles,
-      renderItemContent,
-      getItemHTMLAttributes,
-      changedIds,
-    } = this.props;
+    const { items, itemStyles, children, changedIds, ...rest } = this.props;
 
     return (
-      <Transition
-        native
+      <BaseAnimation
         items={items}
-        keys={(d) => d.key}
-        initial={null}
+        config={config.gentle}
         from={{ opacity: 1 }}
         leave={{ opacity: 1 }}
-        enter={({ y }) => ({ y, opacity: 1 })} // do not specify height in order to get "auto" value
+        enter={({ y }) => ({ y, opacity: 1, scale: 1 })} // do not specify height in order to get "auto" value
         update={({ y, variant: { id } }) => async (next: any, stop: any) => {
           const changed = changedIds.includes(id);
 
@@ -47,29 +35,17 @@ export class Bounce extends React.PureComponent<AnimationComponentProps> {
           await next({ y: y + 9, config: this.config });
           await next({ y, config: this.config });
         }}
-        config={config.gentle}
-      >
-        {({ variant }, s, i) => ({ opacity, y }: any) => {
-          return (
-            <animated.div
-              style={{
-                ...itemStyles,
-                opacity,
-                zIndex: items.length - i,
-                transform: interpolate(
-                  [
-                    y.interpolate((y: number) => `translateY(${y}px)`),
-                  ],
-                  (translateY) => `${translateY}`
-                ),
-                // padding: i < 3 ? 5 : 0,
-              }}
-              children={renderItemContent(variant)}
-              {...getItemHTMLAttributes(variant)}
-            />
-          );
-        }}
-      </Transition>
+        getItemAnimatedDivStyle={({ index, itemOptions: { opacity, y } }) => ({
+          ...itemStyles,
+          opacity,
+          zIndex: items.length - index,
+          transform: interpolate(
+            [y.interpolate((y: number) => `translateY(${y}px)`)],
+            (translateY) => `${translateY}`
+          ),
+        })}
+        {...rest}
+      />
     );
   }
 }
