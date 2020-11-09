@@ -18,10 +18,9 @@ export class Slide extends React.PureComponent<AnimationComponentProps> {
     return (
       <BaseAnimation
         items={items}
-        config={config.gentle}
+        config={config.wobbly}
         from={{ opacity: 1 }}
         leave={{ opacity: 1 }}
-        trail={105}
         enter={({ y }) => ({ y, opacity: 1, x: 0 })} // do not specify height in order to get "auto" value
         update={({ y, variant: { id } }) => async (next: any, stop: any) => {
           const changed = changedIds.includes(id);
@@ -37,7 +36,7 @@ export class Slide extends React.PureComponent<AnimationComponentProps> {
         }}
         getItemAnimatedDivStyle={({
           index,
-          itemOptions: { opacity, y, x, rotation },
+          itemOptions: { opacity, y, x },
         }) => ({
           ...itemStyles,
           opacity,
