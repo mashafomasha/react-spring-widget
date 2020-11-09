@@ -29,5 +29,5 @@ export const options: {
   { value: EVariantAnimation.Scale, label: EVariantAnimation.Scale },
   { value: EVariantAnimation.Wave, label: EVariantAnimation.Wave },
   { value: EVariantAnimation.Bounce, label: EVariantAnimation.Bounce },
-  { value: EVariantAnimation.D, label: EVariantAnimation.D },
+  { value: EVariantAnimation.Slide, label: EVariantAnimation.Slide },
 ];
