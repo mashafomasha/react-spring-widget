@@ -1,6 +1,8 @@
 export enum EVariantAnimation {
-  Scale = 'Scale',
-  Wave = 'Wave',
-  Bounce = 'Bounce',
-  Slide = 'Slide',
+  SCALE = 'SCALE',
+  WAVE = 'WAVE',
+  BOUNCE = 'BOUNCE',
+  SLIDE = 'SLIDE',
+  BLUR = 'BLUR',
+  OPACITY = 'OPACITY',
 }

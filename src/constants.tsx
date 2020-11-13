@@ -26,8 +26,10 @@ export const options: {
   value: EVariantAnimation;
   label: React.ReactNode;
 }[] = [
-  { value: EVariantAnimation.Scale, label: EVariantAnimation.Scale },
-  { value: EVariantAnimation.Wave, label: EVariantAnimation.Wave },
-  { value: EVariantAnimation.Bounce, label: EVariantAnimation.Bounce },
-  { value: EVariantAnimation.Slide, label: EVariantAnimation.Slide },
+  { value: EVariantAnimation.SCALE, label: EVariantAnimation.SCALE },
+  { value: EVariantAnimation.WAVE, label: EVariantAnimation.WAVE },
+  { value: EVariantAnimation.BOUNCE, label: EVariantAnimation.BOUNCE },
+  { value: EVariantAnimation.SLIDE, label: EVariantAnimation.SLIDE },
+  { value: EVariantAnimation.BLUR, label: EVariantAnimation.BLUR },
+  { value: EVariantAnimation.OPACITY, label: EVariantAnimation.OPACITY },
 ];
