@@ -71,6 +71,7 @@ export class Blur extends React.PureComponent<AnimationComponentProps> {
               (translateY) => `${translateY}`
             ),
           })}
+          trail={25}
           {...rest}
         />
       </>
