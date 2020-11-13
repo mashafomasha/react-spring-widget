@@ -5,4 +5,6 @@ export enum EVariantAnimation {
   SLIDE = 'SLIDE',
   BLUR = 'BLUR',
   OPACITY = 'OPACITY',
+  SWAP = 'SWAP',
+  ROTATE = 'ROTATE',
 }

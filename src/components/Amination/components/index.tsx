@@ -4,3 +4,5 @@ export { Bounce } from './Bounce';
 export { Slide } from './Slide';
 export { Blur } from './Blur';
 export { Opacity } from './Opacity';
+export { Swap } from './Swap';
+export { Rotate } from './Rotate';
