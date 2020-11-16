@@ -5,6 +5,12 @@ import { BaseAnimation } from '../BaseAnimation';
 import { AnimationComponentProps } from '../../types';
 
 export class Rotate extends React.PureComponent<AnimationComponentProps> {
+  private perspectiveStyles: React.CSSProperties = {
+    backfaceVisibility: 'visible',
+    transformStyle: 'preserve-3d',
+    perspective: '1000px',
+  };
+
   render() {
     const { items, itemStyles, changedIds, children, ...rest } = this.props;
 
@@ -24,6 +30,9 @@ export class Rotate extends React.PureComponent<AnimationComponentProps> {
           }
 
           await next({
+            config: { duration: 0 },
+          });
+          await next({
             rotation: -45,
             opacity: 0,
             config: {
@@ -37,7 +46,7 @@ export class Rotate extends React.PureComponent<AnimationComponentProps> {
           });
           await next({
             y,
-            config: { duration: 5 },
+            config: { duration: 0 },
           });
           next({
             opacity: 1,
@@ -61,14 +70,17 @@ export class Rotate extends React.PureComponent<AnimationComponentProps> {
             },
           });
         }}
-        getItemAnimatedDivStyle={({
+        getItemOuterAnimatedStyle={({
           index,
-          itemOptions: { opacity, y, rotation },
+          itemOptions: { opacity, y },
         }) => ({
           ...itemStyles,
+          ...this.perspectiveStyles,
           opacity,
           zIndex: items.length - index,
           top: y.interpolate((y: number) => `${y}px`),
+        })}
+        getItemInnerAnimatedStyle={({ itemOptions: { rotation } }) => ({
           transform: rotation.interpolate(
             (rotation: number) => `rotateX(${rotation}deg)`
           ),

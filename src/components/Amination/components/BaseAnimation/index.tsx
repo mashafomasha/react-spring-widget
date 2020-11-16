@@ -9,17 +9,23 @@ import {
 import { IVariant } from '../../../../types/variant';
 import { TransitionItem } from '../../types';
 
-type AnimationProps<T extends TransitionItem> = TransitionProps<T> & {
+type AnimatedStyleOptions = {
+  variant: IVariant;
+  itemOptions: any;
+  state: State;
+  index: number;
+};
+export type AnimationProps<T extends TransitionItem> = TransitionProps<T> & {
   renderItemContent: (variant: IVariant) => React.ReactNode;
-  getItemHTMLAttributes: (
+  getItemOuterHTMLAttributes: (
     variant: IVariant
   ) => React.HTMLAttributes<HTMLDivElement> & { [data: string]: string };
-  getItemAnimatedDivStyle: (options: {
-    variant: IVariant;
-    itemOptions: any;
-    state: State;
-    index: number;
-  }) => React.CSSProperties;
+  getItemOuterAnimatedStyle: (
+    options: AnimatedStyleOptions
+  ) => React.CSSProperties;
+  getItemInnerAnimatedStyle?: (
+    options: AnimatedStyleOptions
+  ) => React.CSSProperties;
 };
 
 export class BaseAnimation<
@@ -31,25 +37,37 @@ export class BaseAnimation<
       initial = null,
       enter = ({ y }: { y: number }) => ({ y }),
       renderItemContent,
-      getItemHTMLAttributes,
-      getItemAnimatedDivStyle,
+      getItemOuterHTMLAttributes,
+      getItemOuterAnimatedStyle,
+      getItemInnerAnimatedStyle,
       ...rest
     } = this.props;
 
     return (
       <Transition native keys={keys} initial={initial} enter={enter} {...rest}>
         {({ variant }, state, index) => (itemOptions: any) => {
+          const options = {
+            itemOptions,
+            variant,
+            state,
+            index,
+          };
+
           return (
             <animated.div
-              style={getItemAnimatedDivStyle({
-                variant,
-                itemOptions,
-                state,
-                index,
-              })}
-              children={renderItemContent(variant)}
-              {...getItemHTMLAttributes(variant)}
-            />
+              style={getItemOuterAnimatedStyle(options)}
+              {...getItemOuterHTMLAttributes(variant)}
+            >
+              <animated.div
+                style={
+                  getItemInnerAnimatedStyle
+                    ? getItemInnerAnimatedStyle(options)
+                    : {}
+                }
+              >
+                {renderItemContent(variant)}
+              </animated.div>
+            </animated.div>
           );
         }}
       </Transition>

@@ -34,7 +34,10 @@ export class Opacity extends React.PureComponent<AnimationComponentProps> {
           await next({ y, config: this.config });
           await next({ opacity: 1, config: this.config });
         }}
-        getItemAnimatedDivStyle={({ index, itemOptions: { opacity, y } }) => ({
+        getItemOuterAnimatedStyle={({
+          index,
+          itemOptions: { opacity, y },
+        }) => ({
           ...itemStyles,
           opacity,
           zIndex: items.length - index,

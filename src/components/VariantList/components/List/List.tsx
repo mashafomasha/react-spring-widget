@@ -52,7 +52,7 @@ export class List extends React.PureComponent<ListProps> {
           items={displayData}
           itemStyles={styles.inner}
           renderItemContent={(variant) => children(variant)}
-          getItemHTMLAttributes={getItemHTMLAttributes}
+          getItemOuterHTMLAttributes={getItemHTMLAttributes}
           changedIds={changedIds}
         />
       </div>

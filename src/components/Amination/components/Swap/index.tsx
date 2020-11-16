@@ -16,7 +16,10 @@ export class Swap extends React.PureComponent<AnimationComponentProps> {
         leave={{ opacity: 0 }}
         enter={({ y }) => ({ y, opacity: 1 })}
         update={({ y }) => ({ y })}
-        getItemAnimatedDivStyle={({ index, itemOptions: { opacity, y } }) => ({
+        getItemOuterAnimatedStyle={({
+          index,
+          itemOptions: { opacity, y },
+        }) => ({
           ...itemStyles,
           opacity,
           zIndex: items.length - index,

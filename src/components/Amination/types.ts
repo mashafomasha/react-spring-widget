@@ -15,7 +15,7 @@ export type AnimationComponentProps = {
   itemStyles?: React.CSSProperties;
   changedIds: IVariant['id'][];
   renderItemContent: (variant: IVariant) => React.ReactNode;
-  getItemHTMLAttributes: (
+  getItemOuterHTMLAttributes: (
     variant: IVariant
   ) => React.HTMLAttributes<HTMLDivElement> & { [data: string]: string };
 };

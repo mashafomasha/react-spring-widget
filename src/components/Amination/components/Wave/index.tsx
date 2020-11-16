@@ -53,7 +53,7 @@ export class Wave extends React.PureComponent<AnimationComponentProps> {
           await next({ x: -10, rotation: -5, config: this.config });
           await next({ x: 0, rotation: 0, config: this.config });
         }}
-        getItemAnimatedDivStyle={({
+        getItemOuterAnimatedStyle={({
           index,
           itemOptions: { opacity, y, x, rotation },
         }) => ({

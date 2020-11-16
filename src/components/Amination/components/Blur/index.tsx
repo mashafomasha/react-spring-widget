@@ -54,7 +54,7 @@ export class Blur extends React.PureComponent<AnimationComponentProps> {
               config: { ...this.config, duration: 125 },
             });
           }}
-          getItemAnimatedDivStyle={({
+          getItemOuterAnimatedStyle={({
             index,
             itemOptions: { opacity, filter, y, translateY },
           }) => ({

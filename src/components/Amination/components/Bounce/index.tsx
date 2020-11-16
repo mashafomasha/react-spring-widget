@@ -35,7 +35,10 @@ export class Bounce extends React.PureComponent<AnimationComponentProps> {
           await next({ y: y + 9, config: this.config });
           await next({ y, config: this.config });
         }}
-        getItemAnimatedDivStyle={({ index, itemOptions: { opacity, y } }) => ({
+        getItemOuterAnimatedStyle={({
+          index,
+          itemOptions: { opacity, y },
+        }) => ({
           ...itemStyles,
           opacity,
           zIndex: items.length - index,

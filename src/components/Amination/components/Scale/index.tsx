@@ -37,7 +37,7 @@ export class Scale extends React.PureComponent<AnimationComponentProps> {
           await next({ scale: 0.9, config: this.config });
           await next({ scale: 1, config: this.config });
         }}
-        getItemAnimatedDivStyle={({
+        getItemOuterAnimatedStyle={({
           index,
           itemOptions: { opacity, y, scale },
         }) => ({

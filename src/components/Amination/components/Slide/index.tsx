@@ -34,7 +34,7 @@ export class Slide extends React.PureComponent<AnimationComponentProps> {
           await next({ y });
           await next({ x: 0, config: this.config });
         }}
-        getItemAnimatedDivStyle={({
+        getItemOuterAnimatedStyle={({
           index,
           itemOptions: { opacity, y, x },
         }) => ({
